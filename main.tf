@@ -41,18 +41,13 @@ resource "aws_instance" "web" {
   key_name      = data.aws_key_pair.key_pair.key_name  # Reference the key
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   user_data = <<-EOF
-              #!/bin/bash
-              # Update all installed packages
-              sudo apt update -y
-              # Install Apache HTTP server (package name is apache2 on Ubuntu)
-              sudo apt install -y apache2
-              # Start the Apache service
-              sudo systemctl start apache2 # Note: it's apache2.service or just apache2
-              # Enable Apache to start on every system boot
-              sudo systemctl enable apache2 # Note: it's apache2.service or just apache2
-              # Create a simple index.html file for demonstration
-              echo "<h1>Hello from Terraform and Apache!</h1>" | sudo tee /var/www/html/index.html
-              EOF
+            #!/bin/bash
+            sudo apt update -y
+            sudo apt install -y apache2
+            sudo systemctl start apache2
+            sudo systemctl enable apache2
+            echo "<h1>Hello from Terraform and Apache!</h1>" | sudo tee /var/www/html/index.html
+            EOF
 
   tags = {
     Name = "test-instance"
