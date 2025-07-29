@@ -43,13 +43,13 @@ resource "aws_instance" "web" {
   user_data = <<-EOF
               #!/bin/bash
               # Update all installed packages
-              sudo yum update -y
-              # Install Apache HTTP server
-              sudo yum install -y httpd
+              sudo apt update -y
+              # Install Apache HTTP server (package name is apache2 on Ubuntu)
+              sudo apt install -y apache2
               # Start the Apache service
-              sudo systemctl start httpd
+              sudo systemctl start apache2 # Note: it's apache2.service or just apache2
               # Enable Apache to start on every system boot
-              sudo systemctl enable httpd
+              sudo systemctl enable apache2 # Note: it's apache2.service or just apache2
               # Create a simple index.html file for demonstration
               echo "<h1>Hello from Terraform and Apache!</h1>" | sudo tee /var/www/html/index.html
               EOF
