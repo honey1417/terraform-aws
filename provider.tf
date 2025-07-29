@@ -9,6 +9,6 @@ terraform {
 
 provider "aws" {
  region = "us-west-2"
- access_key = "<+pipeline.variables.aws_access_key>"
- secret_key = "<+pipeline.variables.aws_secret_key>"
+ access_key = <+stage.variables.access_key>
+ secret_key = <+stage.variables.secret_key>
 }
