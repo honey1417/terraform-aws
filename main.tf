@@ -32,6 +32,19 @@ resource "aws_instance" "web" {
   instance_type = "t2.micro"
   key_name      = data.aws_key_pair.key_pair.key_name  # Reference the key
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  user_data = <<-EOF
+              #!/bin/bash
+              # Update all installed packages
+              sudo yum update -y
+              # Install Apache HTTP server
+              sudo yum install -y httpd
+              # Start the Apache service
+              sudo systemctl start httpd
+              # Enable Apache to start on every system boot
+              sudo systemctl enable httpd
+              # Create a simple index.html file for demonstration
+              echo "<h1>Hello from Terraform and Apache!</h1>" | sudo tee /var/www/html/index.html
+              EOF
 
   tags = {
     Name = "test-instance"
