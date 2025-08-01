@@ -23,5 +23,5 @@ output "iam_access_key_id" {
 output "iam_secret_access_key" {
   description = "The Secret Access Key for the IAM user. (WARNING: This is sensitive and should be handled with care!)"
   value       = aws_iam_access_key.test-key.secret
-  sensitive   = true # Marks the output as sensitive, so Terraform will redact it in console output.
+  sensitive   = false # Marks the output as sensitive, so Terraform will redact it in console output.
 }
