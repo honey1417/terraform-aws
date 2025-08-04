@@ -11,43 +11,38 @@ resource "aws_iam_role" "ec2readonly_role" {
         Principal = {
           Service = "ec2.amazonaws.com"
         }
-      },
+      }
     ]
   })
-
 }
 
-#Attach existing managed policy to role 
+# Attach existing managed policy to role 
 resource "aws_iam_role_policy_attachment" "ec2readonly_role_attach" {
   role       = aws_iam_role.ec2readonly_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
 }
 
-#create ec2 instance
-resource "aws_instance" "test" {
-    ami = "ami-05f991c49d264708f"
-    instance_type = "t2.micro"
-    iam_instance_profile = aws_iam_instance_profile.readonly_profile.name
-
-    tags = {
-        Name = "ec2-readonlyrole-vm"
-    }
-
-    depends_on = [aws_iam_instance_profile.readonly_profile]
-
-}
-
-
 # IAM instance profile
 resource "aws_iam_instance_profile" "readonly_profile" {
-    name = "ec2-readonly-instance-profile"
-    role = aws_iam_role.ec2readonly_role.name
+  name = "ec2-readonly-instance-profile"
+  role = aws_iam_role.ec2readonly_role.name
 }
 
+# Create EC2 instance
+resource "aws_instance" "test" {
+  ami                    = "ami-05f991c49d264708f"
+  instance_type          = "t2.micro"
+  iam_instance_profile   = aws_iam_instance_profile.readonly_profile.name
 
+  tags = {
+    Name = "ec2-readonlyrole-vm"
+  }
+
+  depends_on = [aws_iam_instance_profile.readonly_profile]
+}
 
 
 #IAM Instance Profile is a container for an IAM Role 
 #that can be attached to an EC2 instance.
 #attach an instance profile to the EC2 instance, 
-#and that profile contains the role.
+#and that profile contains the role. 
