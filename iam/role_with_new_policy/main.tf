@@ -46,7 +46,7 @@ resource "aws_iam_instance_profile" "custom_profile" {
 
 # create ec2 instance with this new role 
 resource "aws_instance" "custom_instance" {
-    ami = ""
+    ami = "ami-05f991c49d264708f"
     instance_type = "t2.micro"
     iam_instance_profile = aws_iam_instance_profile.custom_profile.name
 
