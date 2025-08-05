@@ -48,9 +48,9 @@ resource "aws_iam_instance_profile" "custom_profile" {
 resource "aws_instance" "custom_instance" {
     ami = ""
     instance_type = "t2.micro"
-    iam_instance_profile = aws_iam_instance_profile.custom_instance_profile.name
+    iam_instance_profile = aws_iam_instance_profile.custom_profile.name
 
-    depends_on = [aws_iam_instance_profile.custom_instance_profile]
+    depends_on = [aws_iam_instance_profile.custom_profile]
 
     tags = {
         Name = "ec2-customrole-vm"
