@@ -3,7 +3,7 @@ resource "aws_iam_policy" "custom_policy" {
     name = "custom-policy"
     description = "allows only describing an Ec2"
     policy = jsonencode({
-        Version = "2010-10-17",
+        Version = "2012-10-17",
         Statement = [
           {
 
@@ -19,7 +19,7 @@ resource "aws_iam_policy" "custom_policy" {
 resource "aws_iam_role" "custom_role" {
     name = "custom_ec2_role"
     assume_role_policy = jsonencode({
-        Version = "2010-10-17",
+        Version = "2012-10-17",
         Statement = [
             {
                 Effect = "Allow",
