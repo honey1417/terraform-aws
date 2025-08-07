@@ -39,45 +39,29 @@ resource "aws_instance" "test_instance" {
   depends_on = [aws_ebs_volume.vol_test]
 
   user_data = <<-EOF
-              #!/bin/bash
-              # Wait for volume attachment with status messages
-              echo "Starting EBS volume setup..."
-              while [ ! -e /dev/nvme1n1 ]; do
-                echo "Volume not attached yet, waiting 5 seconds..."
-                sleep 5
-              done
-              echo "Volume successfully attached at /dev/nvme1n1"
-              
-              # List available disks
-              echo "Listing available block devices:"
-              lsblk
-              
-              # Check filesystem status
-              echo "Checking filesystem status:"
-              sudo file -s /dev/nvme1n1
-              
-              # Format if needed
-              echo "Formatting volume as XFS filesystem..."
-              sudo mkfs -t xfs /dev/nvme1n1
-              
-              # Create mount point
-              echo "Creating mount point at /mydata"
-              sudo mkdir /mydata
-              
-              # Mount volume
-              echo "Mounting volume to /mydata"
-              sudo mount /dev/nvme1n1 /mydata
-              
-              # Make mount persistent
-              echo "Making mount persistent in /etc/fstab"
-              echo "/dev/nvme1n1 /mydata xfs defaults,nofail 0 2" | sudo tee -a /etc/fstab
-              
-              # Final verification
-              echo "Verifying mount:"
-              df -h | grep mydata
-              echo "EBS volume setup complete!"
-              EOF
-
+            #!/bin/bash
+            # Wait for EBS volume (using BOTH naming conventions)
+            while [ ! -e /dev/nvme1n1 ] && [ ! -e /dev/xvdh ]; do
+              sleep 10
+            done
+            
+            # Use whichever device exists
+            if [ -e /dev/nvme1n1 ]; then
+              DEVICE="/dev/nvme1n1"
+            else
+              DEVICE="/dev/xvdh"
+            fi
+            
+            # Format if unformatted
+            if [[ $(sudo file -s $DEVICE) == *"data"* ]]; then
+              sudo mkfs -t xfs $DEVICE
+            fi
+            
+            # Mount and make persistent
+            sudo mkdir /mydata
+            sudo mount $DEVICE /mydata
+            echo "$DEVICE /mydata xfs defaults,nofail 0 2" | sudo tee -a /etc/fstab
+            EOF
   tags = {
     Name = "vol_instance"
   }
